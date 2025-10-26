@@ -5,6 +5,9 @@ const PasswordGenerator = () => {
   const [passwordLength, setPasswordLength] = useState(10);
   const [password, setPassword] = useState("");
   const [strengthColor, setStrengthColor] = useState("#ccc");
+  const [suggestions, setSuggestions] = useState([]);    // updated
+  const [selectedPassword, setSelectedPassword] = useState("");  // updated
+
 
   const [includeUpper, setIncludeUpper] = useState(false);
   const [includeLower, setIncludeLower] = useState(false);
@@ -51,40 +54,102 @@ const PasswordGenerator = () => {
     return array.join("");
   };
 
-  const generatePassword = () => {
-    let funcArr = [];
-    if (includeUpper) funcArr.push(generateUpperCase);
-    if (includeLower) funcArr.push(generateLowerCase);
-    if (includeNumber) funcArr.push(generateRandomNumber);
-    if (includeSymbol) funcArr.push(generateSymbol);
+  //updated from here...down to...........................................
+  const generateNameBasedSuggestions = (name) => {
+  if (!name.trim()) return [];
 
-    if (funcArr.length === 0 && userName.trim() === "") return;
+  const formattedName =
+    name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
-    let tempPassword = "";
+  // You can customize these patterns
+  const patterns = [
+    `@${formattedName}123`,
+    `${formattedName}#1#2#3`,
+    `#${formattedName}@123`,
+    `#${formattedName}00@123`,
+    `@123-${formattedName}`,
+  ];
 
-    // 🧩 Include user’s name first (to be shuffled later)
-    if (userName.trim() !== "") {
-      tempPassword += userName.trim();
-    }
-
-    const remainingLength = Math.max(passwordLength - tempPassword.length, 0);
-
-    // Compulsory inclusion of at least one of each selected type
-    funcArr.forEach((fn) => (tempPassword += fn()));
-
-    // Fill the rest with random selected functions
-    for (let i = 0; i < remainingLength - funcArr.length; i++) {
-      const randIndex = getRndInteger(0, funcArr.length);
-      tempPassword += funcArr[randIndex]();
-    }
-
-    // 🔀 Shuffle the final password (name included)
-    tempPassword = shufflePassword(Array.from(tempPassword));
-
-    // Trim to desired length
-    setPassword(tempPassword.slice(0, passwordLength));
-    calcStrength();
+  return patterns;
   };
+
+  //  here..........................................
+
+  // const generatePassword = () => {
+  //   let funcArr = [];
+  //   if (includeUpper) funcArr.push(generateUpperCase);
+  //   if (includeLower) funcArr.push(generateLowerCase);
+  //   if (includeNumber) funcArr.push(generateRandomNumber);
+  //   if (includeSymbol) funcArr.push(generateSymbol);
+
+  //   if (funcArr.length === 0 && userName.trim() === "") return;
+
+  //   let tempPassword = "";
+
+  //   // 🧩 Include user’s name first (to be shuffled later)
+  //   if (userName.trim() !== "") {
+  //     tempPassword += userName.trim();
+  //   }
+
+  //   const remainingLength = Math.max(passwordLength - tempPassword.length, 0);
+
+  //   // Compulsory inclusion of at least one of each selected type
+  //   funcArr.forEach((fn) => (tempPassword += fn()));
+
+  //   // Fill the rest with random selected functions
+  //   for (let i = 0; i < remainingLength - funcArr.length; i++) {
+  //     const randIndex = getRndInteger(0, funcArr.length);
+  //     tempPassword += funcArr[randIndex]();
+  //   }
+
+  //   // 🔀 Shuffle the final password (name included)
+  //   tempPassword = shufflePassword(Array.from(tempPassword));
+
+  //   // Trim to desired length
+  //   setPassword(tempPassword.slice(0, passwordLength));
+  //   calcStrength();
+  // };
+
+  // update-2.......................................................................|
+  const generatePassword = () => {                                               //this block is added
+  // 🧩 If user entered name, show custom suggestions                           //this block is added
+  if (userName.trim() !== "") {                                                 //this block is added
+    const newSuggestions = generateNameBasedSuggestions(userName);              //this block is added
+    setSuggestions(newSuggestions);                                             //this block is added
+    setPassword(""); // Clear old password                                      //this block is added
+    return;                                                                     //this block is added
+  }                                                                            //this block is added
+
+  // 🧠 Otherwise, continue your existing random password logic
+  let funcArr = [];
+  if (includeUpper) funcArr.push(generateUpperCase);
+  if (includeLower) funcArr.push(generateLowerCase);
+  if (includeNumber) funcArr.push(generateRandomNumber);
+  if (includeSymbol) funcArr.push(generateSymbol);
+
+  if (funcArr.length === 0 && userName.trim() === "") return;
+
+  let tempPassword = "";
+
+  if (userName.trim() !== "") {
+    tempPassword += userName.trim();
+  }
+
+  const remainingLength = Math.max(passwordLength - tempPassword.length, 0);
+
+  funcArr.forEach((fn) => (tempPassword += fn()));
+
+  for (let i = 0; i < remainingLength - funcArr.length; i++) {
+    const randIndex = getRndInteger(0, funcArr.length);
+    tempPassword += funcArr[randIndex]();
+  }
+
+  tempPassword = shufflePassword(Array.from(tempPassword));
+  setPassword(tempPassword.slice(0, passwordLength));
+  setSuggestions([]); // Clear old suggestions
+  calcStrength();
+};
+// update-2 till here ^ .....................................................................
 
   const copyToClipboard = async () => {
     try {
@@ -102,6 +167,23 @@ const PasswordGenerator = () => {
       <div className="mx-auto p-[16px]">
         <p className="text-2xl text-bold">Password Generator</p>
       </div>
+{/* ...
+      <div className="display-container mx-auto relative">
+        <input
+          ref={passwordRef}
+          value={password}
+          placeholder="Password"
+          readOnly
+          className="display bg-[#3D4754] rounded-md w-[488px] h-[32px] p-[15px]"
+        />
+        <button className="copyBtn absolute right-[5px] top-[6px]" onClick={copyToClipboard}>
+          <span
+            className="tooltip absolute top-[-25px] right-0 bg-black text-white text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 [&.active]:opacity-100"
+            ref={copyMsgRef}
+          ></span>
+          <FaCopy />
+        </button>
+      </div>... */}
 
       <div className="display-container mx-auto relative">
         <input
@@ -119,6 +201,30 @@ const PasswordGenerator = () => {
           <FaCopy />
         </button>
       </div>
+
+      {/* 🆕 Dropdown for suggestions */}                                    
+      {suggestions.length > 0 && (                                            // here to 
+        <div className="mx-auto bg-[#3D4754] rounded-md w-[488px] mt-2">
+          <select
+            className="w-full bg-[#3D4754] p-2 rounded-md"
+            value={selectedPassword}
+            onChange={(e) => {                                              //updated block
+              setSelectedPassword(e.target.value);
+              setPassword(e.target.value);
+              setSuggestions([]); // Hide dropdown after selection
+            }}
+          >
+            <option value="">Select a password suggestion...</option>
+            {suggestions.map((s, i) => (
+              <option key={i} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}                             
+                                                                    
+
 
       <div className="input-container flex flex-col mx-auto">
 
