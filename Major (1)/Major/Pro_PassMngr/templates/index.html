@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PassManager</title>
+</head>
+<body>
+  <h2>Add New Password</h2>
+  <form action="/add" method="post">
+    Website: <input name="website"><br>
+    Username: <input name="username"><br>
+    Password: <input type="password" name="password"><br>
+    Master Key: <input type="password" name="master"><br>
+    <button type="submit">Save</button>
+  </form>
+  <a href="/list">View Stored Passwords</a>
+  <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, msg in messages %}
+      <p style="color:{{'red' if category=='danger' else 'green'}}">{{msg}}</p>
+    {% endfor %}
+  {% endwith %} -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <p style="color:
+        {% if category == 'danger' %}red
+        {% elif category == 'success' %}green
+        {% elif category == 'info' %}blue
+        {% else %}black
+        {% endif %}
+      ">
+        {{ msg }}
+      </p>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+</body>
+</html>

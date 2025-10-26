@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stored Passwords</title>
+</head>
+<body>
+  <h2>Saved Accounts</h2>
+  <ul>
+    {% for row in rows %}
+      <li>[{{row[0]}}] {{row[1]}} ({{row[2]}}) - {{row[3]}}
+        <form action="/get/{{row[0]}}" method="post" style="display:inline;">
+          Master Key: <input type="password" name="master">
+          <button type="submit">Show</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="/">Back</a>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, msg in messages %}
+      <p style="color:{{'red' if category=='danger' else 'blue'}}">{{msg}}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>
