@@ -21,6 +21,10 @@ from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
 from fastapi.middleware.cors import CORSMiddleware
 import hmac,hashlib
+#hamara ek aur nya code
+from dotenv import load_dotenv
+load_dotenv()   # only affects local dev; Render ignores .env
+
 
 # ✅ Create FastAPI app ONCE
 app = FastAPI(title="PassManager Phase 2 API")
@@ -46,7 +50,16 @@ NONCE_LEN = 12
 MASTER_PASSWORD = os.getenv("MASTER_PASSWORD")
 if not MASTER_PASSWORD:
     raise RuntimeError("Set MASTER_PASSWORD environment variable before running the server.")
-
+#hamara ek aur nya code 
+if __name__ == "__main__":
+    init_db_if_missing()
+    if not MASTER_PASSWORD:
+        raise SystemExit("Set MASTER_PASSWORD in environment")
+    import uvicorn, os
+    host = "0.0.0.0"
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Starting uvicorn on {host}:{port}")
+    uvicorn.run("passmanager_api:app", host=host, port=port, log_level="info")
 
 
 # ------------------ DB helpers ------------------
@@ -69,6 +82,22 @@ def derive_master_key():
     iters = int(settings[b"pbkdf2_iters"].decode() if b"pbkdf2_iters" in settings else settings["pbkdf2_iters"].decode())
     key = PBKDF2(MASTER_PASSWORD.encode(), salt, dkLen=KEY_LEN, count=iters)
     return key
+# ------------------ hamara nya code ------------------
+def init_db_if_missing():
+    if os.path.exists(DB_PATH):
+        return
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS settings (k BLOB PRIMARY KEY, v BLOB);""")
+    c.execute("""CREATE TABLE IF NOT EXISTS passwords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        website TEXT, username TEXT,
+        password_encrypted BLOB, nonce BLOB, tag BLOB, created_at TEXT);""")
+    import secrets
+    salt = secrets.token_bytes(16)
+    c.execute("INSERT OR REPLACE INTO settings (k,v) VALUES (?,?)", (b"salt", salt))
+    c.execute("INSERT OR REPLACE INTO settings (k,v) VALUES (?,?)", (b"pbkdf2_iters", str(PBKDF2_ITERS).encode()))
+    conn.commit(); conn.close()
 
 # ------------------ Crypto helpers ------------------
 def encrypt(plaintext: bytes, key: bytes):
