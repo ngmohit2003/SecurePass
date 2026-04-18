@@ -1,0 +1,364 @@
+@import "tailwindcss";
+
+body {
+  margin: 0;
+
+  overflow-x: hidden;
+}
+
+/* ================================
+   Left ↔ Right Infinite Animation
+   ================================ */
+
+/* ================================
+   Infinite Horizontal Marquee
+   ================================ */
+
+
+
+.marquee {
+  display: flex;
+  animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+
+/* ===============================
+   Navbar Cut Edge Effect
+   =============================== */
+
+.navbar-edge {
+  position: relative;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+/* LEFT CUT */
+.navbar-edge::before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  background: white;
+  border-radius: 50%;
+}
+
+/* RIGHT CUT */
+.navbar-edge::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  background: white;
+  border-radius: 50%;
+}
+
+
+
+/* ===============================
+   Slanted / Diagonal Navbar
+   =============================== */
+
+.slanted-navbar {
+  background: linear-gradient(
+    to right,
+    #a8c0e6,
+    #f1f5ff,
+    #a8c0e6
+  );
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  /* THIS IS THE KEY PART */
+  clip-path: polygon(
+    3% 0,     /* left top slant */
+    97% 0,    /* right top slant */
+    100% 50%, /* right cut */
+    97% 100%, /* right bottom slant */
+    3% 100%,  /* left bottom slant */
+    0 50%     /* left cut */
+  );
+}
+
+
+.bg-soft-blue {
+    background: linear-gradient(
+      to right,
+      #a8c0e6,
+      #f1f5ff,
+      #a8c0e6
+    );
+  }
+
+
+
+
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeUp {
+    animation: fadeUp 1s ease forwards;
+  }
+
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+
+
+
+  .font-insta {
+  font-family: 'Pacifico', cursive;
+}
+
+.font-navbar{
+  font-family:'Pacifico'
+}
+
+.font-sans-serif {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+
+.loader {
+  width: 48px;
+  height: 48px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: relative;
+  animation: skLinRotate 1s ease-in-out infinite alternate;
+}
+
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 5px solid transparent;
+  border-top-color: #42d5ba; /* light blue */
+}
+
+@keyframes skLinRotate {
+  95%, 100% {
+    transform: rotate(840deg);
+  }
+}
+
+
+.loading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    gap: 6px;
+}
+
+.loading span{
+    width: 4px;
+    height: 50px;
+    background: #4c86f4;
+    animation: scale 0.9s ease-in-out infinite;
+}
+
+.loading span:nth-child(2){
+    background: #49a84c;
+    animation-delay: -0.8s;
+}
+
+.loading span:nth-child(3){
+    background: #ffb812;
+    animation-delay: -0.7s;
+}
+
+.loading span:nth-child(4){
+    background: #fa1818;
+    animation-delay: -0.6s;
+}
+
+.loading span:nth-child(5){
+    background: #2196f3;
+    animation-delay: -0.5s;
+}
+
+.loading span:nth-child(6){
+    background: #f9f14e;
+    animation-delay: -0.4s;
+}
+.loading span:nth-child(7){
+    background: #8800ff;
+    animation-delay: -0.3s;
+}
+@keyframes scale{
+    0%, 40%, 100%{
+        transform: scaleY(0.05);
+    }
+    20%{
+        transform: scaleY(1);
+    }
+}
+
+
+
+.custom-toast {
+  animation: slideDown 2.5s ease forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+/* ===== PREMIUM TOAST DESIGN ===== */
+
+.custom-toast {
+  backdrop-filter: blur(14px);
+  background: linear-gradient(
+    135deg,
+    rgba(150, 89, 251, 0.95),
+    rgba(180, 119, 238, 0.9)
+  ) !important;
+
+  color: black !important;
+  
+  padding: 14px 22px !important;
+  border-radius: 14px !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  border: black !important;
+  margin-top: 8px !important;
+
+  box-shadow:
+    0 10px 30px rgba(150, 89, 251, 0.35),
+    0 0 25px rgba(150, 89, 251, 0.4);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  animation: toastSlide 0.4s ease forwards;
+}
+
+
+
+@keyframes toastSlide {
+  0% {
+    transform: translateY(-80px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+/* Success Style */
+.custom-toast[data-type="success"] {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.95),
+    rgba(16, 185, 129, 0.9)
+  ) !important;
+
+  box-shadow:
+    0 10px 30px rgba(34, 197, 94, 0.35),
+    0 0 25px rgba(34, 197, 94, 0.4);
+}
+
+/* Error Style */
+.custom-toast[data-type="error"] {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.95),
+    rgba(220, 38, 38, 0.9)
+  ) !important;
+
+  box-shadow:
+    0 10px 30px rgba(239, 68, 68, 0.35),
+    0 0 25px rgba(239, 68, 68, 0.4);
+}
+
+
+
+.perspective {
+  perspective: 1000px;
+}
+
+.flip-card {
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
+
+.flip-card:hover {
+  transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+
+
+
+/* ===== BLUR REVEAL EFFECT ===== */
+
+.blur-reveal-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.blur-overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(0%);
+  transition: transform 0.8s ease;
+  z-index: 20;
+}
+
+.blur-reveal-wrapper:hover .blur-overlay {
+  transform: translateY(-100%);
+}
